@@ -531,10 +531,7 @@ The code snippet includes comprehensive logging. Monitor logs for:
 
 ## Related Documentation
 
-- [ProcessFlow API Documentation](./PROCESSFLOW_API_DOCUMENTATION.md) - API reference
-- [Async ProcessFlow Queue Implementation](./ASYNC_PROCESSFLOW_QUEUE_IMPLEMENTATION.md) - Technical details
-- [WebApp API Usage Guide](./WEBAPP_API_USAGE_GUIDE.md) - WebApp integration
-- [ProcessFlow Triggers Guide](./PROCESSFLOW_TRIGGERS_GUIDE.md) - Trigger configuration
+The following guides live in the **platform repository**, not in this snippets repo: ProcessFlow API Documentation, Async ProcessFlow Queue Implementation, WebApp API Usage Guide, ProcessFlow Triggers Guide. Refer to the platform docs for API reference, queue details, and trigger configuration.
 
 ## Support
 

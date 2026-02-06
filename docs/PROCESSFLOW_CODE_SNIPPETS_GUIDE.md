@@ -33,21 +33,21 @@ return $output;
 <?php
 // ❌ WRONG - Don't use echo or print
 echo "Processing data...";
-print_r($input);
+print_r($process_input);
 // No return statement = no data passed to next step
 ```
 
 ## Input and Output
 
 ### Input Data
-Each step receives data from the previous step via the `$input` variable:
+Each step receives data from the previous step via the `$process_input` variable:
 
 ```php
 <?php
 // Access input data
-$customer_name = $input['name'];
-$customer_email = $input['email'];
-$order_amount = $input['amount'];
+$customer_name = $process_input['name'];
+$customer_email = $process_input['email'];
+$order_amount = $process_input['amount'];
 ```
 
 ### Output Data
@@ -214,7 +214,7 @@ return [
 ```php
 <?php
 // Validate input data
-if (empty($input['email'])) {
+if (empty($process_input['email'])) {
     return [
         'success' => false,
         'error' => [
@@ -226,7 +226,7 @@ if (empty($input['email'])) {
     ];
 }
 
-if (!filter_var($input['email'], FILTER_VALIDATE_EMAIL)) {
+if (!filter_var($process_input['email'], FILTER_VALIDATE_EMAIL)) {
     return [
         'success' => false,
         'error' => [
@@ -248,7 +248,7 @@ return ['success' => true, 'data' => $processed_data];
 <?php
 try {
     $stmt = $db->prepare("INSERT INTO Customers (name, email, tenant_id) VALUES (?, ?, ?)");
-    $result = $stmt->execute([$input['name'], $input['email'], $tenant_id]);
+    $result = $stmt->execute([$process_input['name'], $process_input['email'], $tenant_id]);
     
     if (!$result) {
         return [
@@ -287,7 +287,7 @@ try {
 ```php
 <?php
 try {
-    $result = $connectors->execute('payment-gateway', 'process_payment', $input);
+    $result = $integration->executeSync('payment-gateway', $process_input);
     
     if (!$result['success']) {
         return [
@@ -328,9 +328,9 @@ try {
 <?php
 // Transform customer data
 $output = [];
-$output['customer_id'] = 'CUST_' . strtoupper(substr($input['email'], 0, 5));
-$output['full_name'] = $input['first_name'] . ' ' . $input['last_name'];
-$output['is_premium'] = $input['amount'] > 1000;
+$output['customer_id'] = 'CUST_' . strtoupper(substr($process_input['email'], 0, 5));
+$output['full_name'] = $process_input['first_name'] . ' ' . $process_input['last_name'];
+$output['is_premium'] = $process_input['amount'] > 1000;
 $output['processed_at'] = date('Y-m-d H:i:s');
 
 return [
@@ -349,11 +349,11 @@ For regular tenant processes, use `$tenantDb` for secure, tenant-scoped database
 ```php
 <?php
 // ✅ RECOMMENDED: Use tenantDb for tenant-scoped queries
-$customer = $tenantDb->getOne("SELECT * FROM Customers WHERE email = ?", [$input['email']]);
+$customer = $tenantDb->getOne("SELECT * FROM Customers WHERE email = ?", [$process_input['email']]);
 if (!$customer) {
     $customerId = $tenantDb->insert('Customers', [
-        'name' => $input['full_name'],
-        'email' => $input['email'],
+        'name' => $process_input['full_name'],
+        'email' => $process_input['email'],
         'created_by' => $user_id
         // tenant_id is automatically added by tenantDb
     ]);
@@ -415,7 +415,7 @@ try {
 ```php
 <?php
 // Make approval decision
-$amount = floatval($input['amount']);
+$amount = floatval($process_input['amount']);
 
 if ($amount > 5000) {
     return [
@@ -511,7 +511,7 @@ if ($result['success']) {
 // Create a notification via API
 $notificationData = [
     'title' => 'Order Created',
-    'message' => "Order #{$input['order_id']} has been created",
+    'message' => "Order #{$process_input['order_id']} has been created",
     'type' => 'success'
 ];
 
@@ -541,10 +541,10 @@ if ($result['success']) {
 ```php
 <?php
 // Update an entity
-$entityId = $input['entity_id'];
+$entityId = $process_input['entity_id'];
 $updateData = [
-    'name' => $input['new_name'],
-    'metadata' => $input['metadata'] ?? []
+    'name' => $process_input['new_name'],
+    'metadata' => $process_input['metadata'] ?? []
 ];
 
 $result = $api->put("/api/v1/entities/{$entityId}", $updateData);
@@ -564,7 +564,7 @@ if ($result['success']) {
 ```php
 <?php
 // Delete a resource
-$resourceId = $input['resource_id'];
+$resourceId = $process_input['resource_id'];
 $result = $api->delete("/api/v1/resources/{$resourceId}");
 
 if ($result['success']) {
@@ -584,9 +584,9 @@ if ($result['success']) {
 // Call external service with custom headers
 try {
     $apiData = [
-        'name' => $input['full_name'],
-        'email' => $input['email'],
-        'amount' => $input['amount']
+        'name' => $process_input['full_name'],
+        'email' => $process_input['email'],
+        'amount' => $process_input['amount']
     ];
 
     $result = $api->post('https://api.example.com/payment', $apiData, [
@@ -694,7 +694,7 @@ The `$api` service has the following built-in limits:
 
 **Note**: These limits are hardcoded in the `TenantAPIService` class. For custom timeout values, you would need to use cURL directly or modify the service.
 
-For more detailed API usage examples, see [WebApp API Usage Guide](./WEBAPP_API_USAGE_GUIDE.md).
+For more detailed API usage examples, see the WebApp API Usage Guide in the **platform repository**.
 
 ### Files Service Usage
 
@@ -875,212 +875,11 @@ For more detailed file upload documentation, see [WebApp File Upload Guide](./WE
 
 ## Tenant File Operations
 
-Process step code snippets have access to tenant-scoped file and directory operations that match standard PHP function signatures. All operations are automatically scoped to `storage/tenantdata/<tenant_id>/` directory, with automatic path validation to prevent directory traversal attacks.
+Process step code snippets have access to **tenant-scoped** file and directory operations. The platform injects these as **closure variables with a `$` prefix** (e.g. `$file_get_contents`, `$file_put_contents`, `$mkdir`, `$is_dir`). Native PHP function names like `file_get_contents` and `mkdir` are **not** available in the sandbox—only the prefixed closure variables are.
 
-### Available File Operations
+All operations are scoped to `storage/tenantdata/<tenant_id>/` with automatic path validation to prevent directory traversal.
 
-All standard PHP file operations are available with the same syntax, but automatically scoped to the tenant directory:
-
-#### File Operations
-
-- **`file_get_contents(string $filename, ...)`** - Read entire file into a string
-- **`file_put_contents(string $filename, mixed $data, ...)`** - Write data to a file
-- **`fopen(string $filename, string $mode, ...)`** - Open file or URL
-- **`fclose(resource $stream)`** - Close an open file pointer
-- **`fread(resource $stream, int $length)`** - Binary-safe file read
-- **`fwrite(resource $stream, string $data, ...)`** - Binary-safe file write
-- **`fgets(resource $stream, ...)`** - Gets line from file pointer
-- **`unlink(string $filename, ...)`** - Delete a file
-- **`copy(string $from, string $to, ...)`** - Copy file
-- **`rename(string $oldname, string $newname, ...)`** - Rename/move a file or directory
-
-#### Directory Operations
-
-- **`mkdir(string $directory, int $permissions = 0755, bool $recursive = false, ...)`** - Create directory
-- **`rmdir(string $directory, ...)`** - Remove empty directory
-- **`chmod(string $filename, int $permissions)`** - Change file mode
-- **`chown(string $filename, string|int $user)`** - Change file owner (returns false - not allowed)
-- **`scandir(string $directory, ...)`** - List files and directories
-- **`opendir(string $directory, ...)`** - Open directory handle
-- **`readdir(resource $dir_handle)`** - Read entry from directory handle
-- **`closedir(resource $dir_handle)`** - Close directory handle
-- **`glob(string $pattern, int $flags = 0)`** - Find pathnames matching a pattern
-
-#### File Information Functions
-
-- **`file_exists(string $filename)`** - Check if file or directory exists
-- **`is_dir(string $filename)`** - Check if path is a directory
-- **`is_file(string $filename)`** - Check if path is a file
-- **`is_readable(string $filename)`** - Check if file is readable
-- **`is_writable(string $filename)`** - Check if file is writable
-- **`filesize(string $filename)`** - Get file size in bytes
-- **`filemtime(string $filename)`** - Get file modification time
-- **`filectime(string $filename)`** - Get file creation time
-- **`fileatime(string $filename)`** - Get file access time
-- **`fileperms(string $filename)`** - Get file permissions
-- **`filetype(string $filename)`** - Get file type
-
-### Usage Examples
-
-#### Reading and Writing Files
-
-```php
-<?php
-// Read a configuration file
-$config = json_decode(file_get_contents('config/app.json'), true);
-
-// Write data to a file
-$data = ['status' => 'success', 'timestamp' => time()];
-file_put_contents('output/result.json', json_encode($data, JSON_PRETTY_PRINT));
-
-// Append to a file
-file_put_contents('logs/activity.log', "New entry\n", FILE_APPEND | LOCK_EX);
-```
-
-#### Stream Operations
-
-```php
-<?php
-// Read large file line by line
-$handle = fopen('data/large.csv', 'r');
-if ($handle) {
-    while (($line = fgets($handle)) !== false) {
-        // Process each line
-        $data = str_getcsv($line);
-        // ... your processing logic ...
-    }
-    fclose($handle);
-}
-
-// Write to file using streams
-$handle = fopen('output/report.txt', 'w');
-if ($handle) {
-    fwrite($handle, "Report Header\n");
-    fwrite($handle, "Report Content\n");
-    fclose($handle);
-}
-```
-
-#### Directory Operations
-
-```php
-<?php
-// Create directory structure
-mkdir('reports/2025/01', 0755, true);
-
-// List directory contents
-$files = scandir('documents');
-foreach ($files as $file) {
-    if ($file !== '.' && $file !== '..') {
-        if (is_file("documents/$file")) {
-            $size = filesize("documents/$file");
-            error_log("File: $file, Size: $size bytes");
-        }
-    }
-}
-
-// Using directory handle
-$dir = opendir('documents');
-if ($dir) {
-    while (($file = readdir($dir)) !== false) {
-        if ($file !== '.' && $file !== '..') {
-            error_log("Found: $file");
-        }
-    }
-    closedir($dir);
-}
-```
-
-#### File Management
-
-```php
-<?php
-// Copy file
-copy('source/data.json', 'backup/data.json');
-
-// Rename/move file
-rename('temp/file.txt', 'archive/file.txt');
-
-// Delete file
-if (file_exists('temp/cache.dat')) {
-    unlink('temp/cache.dat');
-}
-
-// Check file properties
-if (is_file('data/config.json')) {
-    $size = filesize('data/config.json');
-    $modified = filemtime('data/config.json');
-    $readable = is_readable('data/config.json');
-    $writable = is_writable('data/config.json');
-    
-    error_log("File size: $size, Modified: " . date('Y-m-d H:i:s', $modified));
-}
-```
-
-#### Pattern Matching with glob()
-
-```php
-<?php
-// Find all JSON files
-$jsonFiles = glob('data/*.json');
-
-// Find all files in subdirectories
-$allFiles = glob('reports/**/*.txt');
-
-// Find files matching pattern
-$logFiles = glob('logs/app-*.log');
-foreach ($logFiles as $logFile) {
-    error_log("Found log file: $logFile");
-}
-```
-
-### Path Handling
-
-All paths are relative to the tenant directory (`storage/tenantdata/<tenant_id>/`). You can use:
-
-- **Relative paths**: `'data/config.json'` → `storage/tenantdata/<tenant_id>/data/config.json`
-- **Absolute paths (leading slash)**: `'/data/config.json'` → `storage/tenantdata/<tenant_id>/data/config.json`
-
-**Important**: Directory traversal attempts (`../`) are automatically blocked for security.
-
-### Security Features
-
-1. **Automatic Path Validation**: All paths are validated to ensure they stay within the tenant directory
-2. **Directory Traversal Prevention**: Attempts to access files outside the tenant directory are blocked
-3. **Tenant Isolation**: Each tenant can only access their own files
-4. **Automatic Directory Creation**: Directories are automatically created when needed for write operations
-5. **Operation Logging**: All file operations are logged for audit purposes
-
-### Error Handling
-
-All file operations return the same values as standard PHP functions:
-- **File operations** return `false` on failure (check with `=== false`)
-- **Directory operations** return `false` on failure
-- **File information functions** return `false` on failure
-
-```php
-<?php
-// Safe file reading
-$content = file_get_contents('data/config.json');
-if ($content === false) {
-    error_log("Failed to read config file");
-    return ['error' => 'Config file not found'];
-}
-
-// Safe file writing
-$result = file_put_contents('output/result.txt', $data);
-if ($result === false) {
-    error_log("Failed to write result file");
-    return ['error' => 'Failed to write file'];
-}
-```
-
-### Notes
-
-- **`chown()`** always returns `false` - changing file ownership is not allowed for security reasons
-- **`rmdir()`** only works on empty directories - use file operations to remove files first
-- **`move_uploaded_file()`** is not available - use the `$files` service for uploaded files (see File Upload section above)
-- All operations are automatically logged for debugging and audit purposes
+**Authoritative reference:** For the full list of available file closures, syntax, and examples, see [File Operations](Code_Snippets/File_Operations.md) in this repo.
 
 ### Debug Logging
 
@@ -1162,22 +961,22 @@ return ['success' => true, 'data' => $processed];
 $errors = [];
 
 // Check required fields
-if (empty($input['email'])) {
+if (empty($process_input['email'])) {
     $errors[] = 'Email is required';
 }
 
-if (empty($input['amount'])) {
+if (empty($process_input['amount'])) {
     $errors[] = 'Amount is required';
 }
 
 // Validate email format
-if (!empty($input['email']) && !filter_var($input['email'], FILTER_VALIDATE_EMAIL)) {
+if (!empty($process_input['email']) && !filter_var($process_input['email'], FILTER_VALIDATE_EMAIL)) {
     $errors[] = 'Invalid email format';
 }
 
 // Validate amount
-if (!empty($input['amount'])) {
-    $amount = floatval($input['amount']);
+if (!empty($process_input['amount'])) {
+    $amount = floatval($process_input['amount']);
     if ($amount < 0) {
         $errors[] = 'Amount cannot be negative';
     }
@@ -1204,8 +1003,8 @@ return [
     'success' => true,
     'data' => [
         'validated' => true,
-        'amount' => floatval($input['amount']),
-        'email' => $input['email']
+        'amount' => floatval($process_input['amount']),
+        'email' => $process_input['email']
     ],
     'message' => 'Validation passed'
 ];
@@ -1253,7 +1052,7 @@ return [
 <?php
 try {
     // Your processing logic
-    $result = processData($input);
+    $result = processData($process_input);
     return ['success' => true, 'data' => $result];
 } catch (Exception $e) {
     return [
@@ -1274,16 +1073,16 @@ Each step should do one thing well:
 <?php
 // ✅ Good - Single responsibility
 // Step 1: Validate input
-if (empty($input['email'])) {
+if (empty($process_input['email'])) {
     return ['success' => false, 'error' => ['code' => 'MISSING_EMAIL']];
 }
 
 // Step 2: Save to database
 $stmt = $db->prepare("INSERT INTO customers (email) VALUES (?)");
-$stmt->execute([$input['email']]);
+$stmt->execute([$process_input['email']]);
 
 // Step 3: Send notification
-$email->send($input['email'], 'Welcome!', 'Your account is created');
+$email->send($process_input['email'], 'Welcome!', 'Your account is created');
 ```
 
 ### 5. Use Consistent Error Codes
@@ -1309,6 +1108,8 @@ You can spawn asynchronous process executions from within a process step code sn
 **Recommended Approach: API Call with Execution Authorization Key** - The simplest and most secure method using the built-in `$api` service with automatic authentication.
 
 ### Approach 1: API Call with Execution Authorization Key (RECOMMENDED)
+
+**API action:** Both `action=execute-process` and `action=execute-process-advanced` are valid. Use `execute-process` for simple async trigger; use `execute-process-advanced` when you need options such as `priority` or `execution_strategy`. The examples below use `execute-process-advanced` for flexibility.
 
 **Pros:**
 - ✅ **Simplest code** - Just use `$api->post()` with automatic authentication
@@ -1699,12 +1500,12 @@ return ['success' => true, 'data' => $process_output];
 ```php
 <?php
 // Transform and enrich data
-$output = $input; // Start with input
+$output = $process_input; // Start with input
 
 // Add computed fields
-$output['full_name'] = $input['first_name'] . ' ' . $input['last_name'];
-$output['email_domain'] = substr(strrchr($input['email'], "@"), 1);
-$output['is_vip'] = $input['total_orders'] > 10;
+$output['full_name'] = $process_input['first_name'] . ' ' . $process_input['last_name'];
+$output['email_domain'] = substr(strrchr($process_input['email'], "@"), 1);
+$output['is_vip'] = $process_input['total_orders'] > 10;
 
 // Add metadata
 $output['processed_at'] = date('Y-m-d H:i:s');
@@ -1717,13 +1518,13 @@ return ['success' => true, 'data' => $output];
 ```php
 <?php
 // Process based on conditions
-if ($input['customer_type'] === 'premium') {
+if ($process_input['customer_type'] === 'premium') {
     $output = [
         'discount_rate' => 0.15,
         'priority' => 'high',
         'support_level' => 'dedicated'
     ];
-} elseif ($input['customer_type'] === 'standard') {
+} elseif ($process_input['customer_type'] === 'standard') {
     $output = [
         'discount_rate' => 0.05,
         'priority' => 'normal',
@@ -1750,7 +1551,7 @@ return ['success' => true, 'data' => $output];
 $results = [];
 $errors = [];
 
-foreach ($input['items'] as $item) {
+foreach ($process_input['items'] as $item) {
     try {
         $processed = processItem($item);
         $results[] = $processed;
@@ -1802,7 +1603,7 @@ The ProcessFlow system handles your return values as follows:
 
 ### Success Case (`success: true`)
 1. Extracts the `data` field
-2. Passes it as `$input` to the next step
+2. Passes it as `$process_input` to the next step
 3. Continues process execution
 4. Logs success message
 
@@ -1832,7 +1633,4 @@ This ensures that errors are handled gracefully and don't crash the entire proce
 
 ---
 
-For more information, see:
-- [ProcessFlow Architecture Guide](PROCESSFLOW_ARCHITECTURE.md)
-- [ProcessFlow API Reference](PROCESSFLOW_API_REFERENCE.md)
-- [ProcessFlow Security Guide](PROCESSFLOW_SECURITY.md)
+**See also** (these documents live in the **platform repository**, not in this snippets repo): ProcessFlow Architecture Guide, ProcessFlow API Reference, ProcessFlow Security Guide.

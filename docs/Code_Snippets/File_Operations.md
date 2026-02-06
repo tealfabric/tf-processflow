@@ -1,6 +1,6 @@
 # File Upload & Download
 
-This guide covers file operations within ProcessFlow code snippets using tenant-scoped file functions.
+This guide covers file operations within ProcessFlow code snippets using tenant-scoped file functions. **This document is the authoritative reference for tenant file operations in this repository.** The platform injects closure variables (e.g. `$file_get_contents`, `$file_put_contents`, `$mkdir`)—use the `$` prefix; native PHP names are not available in the snippet sandbox.
 
 ## Overview
 

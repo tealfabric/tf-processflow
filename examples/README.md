@@ -12,7 +12,7 @@ Shared, non-tenant PHP snippets organized by category. These are reference imple
 | **data-processing/** | Errors collection, IMAP parsing, Bookstack sync | collect-process-and-integration-errors.php, parse_attachments_*.php, bookstack-*.php |
 | **llm/** | LLM/summary steps | process-step-llm-summary.php |
 | **workflow/** | Async process trigger (stub for WebApp/webhook) | process-step-trigger-async-process.php |
-| **files/** | File operations (see also docs/Code_Snippets/File_Operations.md) | — (add file-based examples here if needed) |
+| **files/** | Reserved for file-operation examples. See [docs/Code_Snippets/File_Operations.md](../docs/Code_Snippets/File_Operations.md) for tenant-scoped file closures. | Empty until examples are added. |
 
 ## Usage
 

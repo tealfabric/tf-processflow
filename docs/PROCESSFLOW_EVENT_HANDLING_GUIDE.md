@@ -162,7 +162,7 @@ Each event type can have multiple listener processes that will all be triggered 
 
 ### From Another ProcessFlow Code Snippet
 
-To emit an event from another process, call the Event Broker process via the `$api` service:
+To emit an event from another process, call the Event Broker process via the `$api` service. **Note:** Both `action=execute-process` and `action=execute-process-advanced` are valid; this guide uses `execute-process`. Use `execute-process-advanced` if you need options such as `priority` or `execution_strategy`.
 
 ```php
 <?php

@@ -1,5 +1,7 @@
 # ProcessFlow Code Snippets Quick Reference
 
+**Authority:** This quick reference is a condensed view. For the full contract and variable list, use [PROCESSFLOW_CODE_SNIPPETS_GUIDE.md](PROCESSFLOW_CODE_SNIPPETS_GUIDE.md) and [docs/interface/v1/](interface/v1/). Prefer `$process_input` (not `$input`) and `$integration` (not deprecated `$connectors`).
+
 ## Basic Template
 
 ```php
@@ -86,7 +88,7 @@ try {
 <?php
 try {
     $stmt = $db->prepare("SELECT * FROM table WHERE tenant_id = ? AND status = ?");
-    $stmt->execute([$tenant_id, $input['status']]);
+    $stmt->execute([$tenant_id, $process_input['status']]);
     $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
     
     return [
@@ -107,9 +109,9 @@ try {
 ```php
 <?php
 $output = [];
-$output['full_name'] = $input['first_name'] . ' ' . $input['last_name'];
-$output['email_domain'] = substr(strrchr($input['email'], "@"), 1);
-$output['is_premium'] = $input['amount'] > 1000;
+$output['full_name'] = $process_input['first_name'] . ' ' . $process_input['last_name'];
+$output['email_domain'] = substr(strrchr($process_input['email'], "@"), 1);
+$output['is_premium'] = $process_input['amount'] > 1000;
 $output['processed_at'] = date('Y-m-d H:i:s');
 
 return ['success' => true, 'data' => $output];
@@ -118,7 +120,7 @@ return ['success' => true, 'data' => $output];
 ### Decision Logic
 ```php
 <?php
-if ($input['amount'] > 5000) {
+if ($process_input['amount'] > 5000) {
     return [
         'success' => true,
         'data' => [
@@ -141,7 +143,7 @@ if ($input['amount'] > 5000) {
 ```php
 <?php
 try {
-    $result = $connectors->execute('service-name', 'method', $input);
+    $result = $integration->executeSync('service-name', $process_input);
     
     if (!$result['success']) {
         return [
@@ -170,11 +172,11 @@ try {
 <?php
 $errors = [];
 
-if ($input['amount'] < 0) {
+if ($process_input['amount'] < 0) {
     $errors[] = 'Amount cannot be negative';
 }
 
-if ($input['amount'] > 100000) {
+if ($process_input['amount'] > 100000) {
     $errors[] = 'Amount exceeds limit';
 }
 
@@ -190,7 +192,7 @@ if (!empty($errors)) {
     ];
 }
 
-return ['success' => true, 'data' => $input];
+return ['success' => true, 'data' => $process_input];
 ```
 
 ### Batch Processing
@@ -199,7 +201,7 @@ return ['success' => true, 'data' => $input];
 $results = [];
 $errors = [];
 
-foreach ($input['items'] as $item) {
+foreach ($process_input['items'] as $item) {
     try {
         $processed = processItem($item);
         $results[] = $processed;
@@ -223,11 +225,11 @@ return ['success' => true, 'data' => ['processed_items' => $results]];
 
 | Variable | Type | Description |
 |----------|------|-------------|
-| `$input` | Array | Data from previous step |
+| `$process_input` | Array | Data from previous step |
 | `$tenant_id` | String | Current tenant ID |
 | `$user_id` | String | Current user ID |
-| `$db` | PDO | Database connection |
-| `$connectors` | Object | Connector service |
+| `$tenantDb` | Object | Tenant-scoped database (prefer over `$db`) |
+| `$integration` | Object | Integration execution service |
 | `$llm` | Object | LLM service |
 
 ## Error Codes
