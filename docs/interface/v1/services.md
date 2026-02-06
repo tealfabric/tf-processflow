@@ -6,7 +6,8 @@ Short reference for services injected into the step context. For full variable l
 
 Use for all tenant-scoped database operations. Enforces tenant isolation; do not pass `tenant_id` manually in queries when using its helpers.
 
-- **getOne(sql, params)** — Single row.
+- **getOne(sql, params)** — Single row (returns associative array or null).
+- **query(sql, params)** — Multiple rows (returns array of associative arrays).
 - **insert(table, data)** — Insert row; returns insert id.
 - **update(table, data, where)** — Update rows; returns affected count.
 - **Prepared statements** — Prefer over raw SQL with concatenation.

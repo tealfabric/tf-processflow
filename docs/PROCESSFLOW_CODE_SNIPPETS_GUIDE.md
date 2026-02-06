@@ -75,7 +75,7 @@ ProcessFlow provides several variables for use in code snippets:
 | `$tenant_id` | String | Current tenant ID |
 | `$user_id` | String | Current user ID |
 | `$webapp_tenant_id` | String | WebApp tenant ID (same as tenant_id) |
-| `$db` | PDO | Database connection (use with caution - prefer `$tenantDb` for tenant-scoped queries) |
+| `$db` | PDO | **Not available in standard tenant context** (blocked by security guardrails). Only for system/root processes. Prefer `$tenantDb` for tenant-scoped queries. |
 | `$tenantDb` | Object | **Tenant-scoped database service (RECOMMENDED)** |
 | `$integration` | Object | **Integration execution service (RECOMMENDED)** |
 | `$connectors` | Object | Connector service for external APIs (DEPRECATED - use `$integration`) |
@@ -89,7 +89,6 @@ ProcessFlow provides several variables for use in code snippets:
 | `$request_method` | String | HTTP request method (`GET`, `POST`) - **Available when triggered by WebApp** |
 | `$request_uri` | String | Request URI path - **Available when triggered by WebApp** |
 | `$remote_addr` | String | Client IP address - **Available when triggered by WebApp** |
-| `$app_url` | String | Application base URL from `APP_URL` environment variable (e.g., `https://dev.tealfabric.io`) |
 | `$app_url` | String | Application base URL from `APP_URL` environment variable (e.g., `https://dev.tealfabric.io`) |
 
 ### Example Usage

@@ -274,9 +274,9 @@ return [
 ## Security Checklist
 
 - [ ] Validate all input data
-- [ ] Use prepared statements for database queries
+- [ ] Use prepared statements for database queries (or `$tenantDb` methods)
 - [ ] Escape output data to prevent XSS
-- [ ] Always include `$tenant_id` in database queries
+- [ ] When using raw SQL with `$db` (system/root processes only), include `$tenant_id`; when using `$tenantDb`, tenant scope is automatic
 - [ ] Check user permissions before operations
 - [ ] Limit resource usage (memory, time)
 - [ ] Log security-relevant events

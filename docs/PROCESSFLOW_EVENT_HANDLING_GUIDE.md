@@ -287,7 +287,11 @@ $event = $process_input['result'];
 if ($event['event_type'] !== 'user_created') {
     return [
         'success' => false,
-        'error' => 'Unexpected event type: ' . $event['event_type']
+        'error' => [
+            'code' => 'UNEXPECTED_EVENT_TYPE',
+            'message' => 'Unexpected event type: ' . $event['event_type']
+        ],
+        'data' => null
     ];
 }
 

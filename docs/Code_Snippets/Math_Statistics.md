@@ -849,9 +849,10 @@ $result = round($value, 6);
 
 ### 3. Validate Numeric Input
 ```php
+$input = $process_input['result'] ?? $process_input;
 $numbers = array_filter($input, 'is_numeric');
 if (empty($numbers)) {
-    return ['success' => false, 'error' => 'No valid numbers'];
+    return ['success' => false, 'error' => ['code' => 'VALIDATION_ERROR', 'message' => 'No valid numbers'], 'data' => null];
 }
 ```
 
