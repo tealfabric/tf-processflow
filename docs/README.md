@@ -1,0 +1,16 @@
+# Process Flow Snippets — Documentation
+
+This directory contains all documentation needed to author ProcessFlow code snippets. The **snippet runtime** (ProcessStepExecutor, CodeSandbox, etc.) lives in the core platform repository; only the authoring guides and the versioned **interface contract** are maintained here.
+
+## Contents
+
+- **PROCESSFLOW_CODE_SNIPPETS_GUIDE.md** — Full guide: structure, input/output, variables, error handling, examples, best practices.
+- **PROCESSFLOW_QUICK_REFERENCE.md** — Quick reference and common patterns.
+- **PROCESSFLOW_EVENT_HANDLING_GUIDE.md** — Event Broker pattern and event-driven process orchestration.
+- **WEBAPP_ASYNC_PROCESS_TRIGGER_GUIDE.md** — Async process trigger for WebApp/Webhook (stub process pattern).
+- **Code_Snippets/** — Category-specific snippet examples (data validation, DB, connectors, notifications, etc.).
+- **interface/** — Versioned step contract (variables, return format, error format, services). See `interface/v1/` for current contract and `interface/CHANGELOG.md` for changes.
+
+## Interface version
+
+The current interface version is in the repository root: **`INTERFACE_VERSION`**. Docs in this folder target that version unless a doc explicitly states otherwise.
