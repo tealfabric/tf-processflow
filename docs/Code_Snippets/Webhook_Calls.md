@@ -574,4 +574,4 @@ $log_message("[INFO] Webhook to: $url - Status: " . $response['status_code']);
 
 - [Process-to-Process Communication](Process_Communication.md)
 - [Integration Connectors](Integration_Connectors.md)
-- [Event Publishing](Event_Publishing.md)
+- [ProcessFlow Event Handling Guide](../PROCESSFLOW_EVENT_HANDLING_GUIDE.md)

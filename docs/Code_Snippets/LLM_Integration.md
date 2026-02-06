@@ -551,6 +551,6 @@ All paths are relative to: `storage/tenantdata/<tenant_id>/`
 
 ## See Also
 
-- [ProcessFlow Code Snippets Guide](PROCESSFLOW_CODE_SNIPPETS_GUIDE.md)
+- [ProcessFlow Code Snippets Guide](../PROCESSFLOW_CODE_SNIPPETS_GUIDE.md)
+- [ProcessFlow Quick Reference](../PROCESSFLOW_QUICK_REFERENCE.md)
 - [Email MIME Parsing](Email_MIME_Parsing.md)
-- [ProcessFlow Quick Reference](PROCESSFLOW_QUICK_REFERENCE.md)

@@ -657,4 +657,3 @@ preg_match('/pattern/ui', $text);
 
 - [Data Transformation & Mapping](Data_Transformation_Mapping.md)
 - [Data Validation & Sanitization](Data_Validation_Sanitization.md)
-- [Template Rendering](Template_Rendering.md)

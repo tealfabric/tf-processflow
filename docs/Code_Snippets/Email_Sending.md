@@ -625,5 +625,5 @@ if (!$result) {
 ## See Also
 
 - [SMS/Push Notifications](Notifications.md)
-- [Template Rendering](Template_Rendering.md)
-- [Batch Data Import/Export](Batch_Import_Export.md)
+
+Related topics (template rendering, batch import/export) may be covered in platform or planned docs.

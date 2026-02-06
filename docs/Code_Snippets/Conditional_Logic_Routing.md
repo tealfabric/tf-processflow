@@ -775,4 +775,4 @@ return [
 
 - [Data Validation & Sanitization](Data_Validation_Sanitization.md)
 - [Process-to-Process Communication](Process_Communication.md)
-- [Event Publishing](Event_Publishing.md)
+- [ProcessFlow Event Handling Guide](../PROCESSFLOW_EVENT_HANDLING_GUIDE.md)

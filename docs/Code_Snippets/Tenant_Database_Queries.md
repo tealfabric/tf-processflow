@@ -649,6 +649,5 @@ if (empty($tableName) || !preg_match('/^[a-zA-Z_][a-zA-Z0-9_]*$/', $tableName)) 
 
 ## See Also
 
-- [Batch Data Import/Export](Batch_Import_Export.md)
 - [Integration Connector Usage](Integration_Connectors.md)
 - [Data Validation & Sanitization](Data_Validation_Sanitization.md)

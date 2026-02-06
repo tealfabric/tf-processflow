@@ -469,5 +469,6 @@ try {
 ## See Also
 
 - [ProcessFlow Code Snippets Guide](../PROCESSFLOW_CODE_SNIPPETS_GUIDE.md)
-- [Integration Workers Guide](../INTEGRATION_WORKERS_GUIDE.md)
 - [zbateson/mail-mime-parser Documentation](https://mail-mime-parser.org/)
+
+Integration workers are documented in the platform repository.

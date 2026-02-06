@@ -630,6 +630,6 @@ $payload['correlation_id'] = $process_input['correlation_id'] ?? uniqid();
 
 ## See Also
 
-- [Event Publishing](Event_Publishing.md)
-- [REST API Calls](REST_API_Calls.md)
+- [ProcessFlow Event Handling Guide](../PROCESSFLOW_EVENT_HANDLING_GUIDE.md) (event publishing, broker pattern)
+- [ProcessFlow Code Snippets Guide](../PROCESSFLOW_CODE_SNIPPETS_GUIDE.md) (API service usage)
 - [Integration Connectors](Integration_Connectors.md)
