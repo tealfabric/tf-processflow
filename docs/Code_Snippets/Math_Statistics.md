@@ -1,6 +1,6 @@
 # Mathematical & Statistical Calculations
 
-This guide covers mathematical and statistical operations within ProcessFlow code snippets.
+This guide covers mathematical and statistical operations within ProcessFlow code snippets. The step contract uses **`$process_input`** for data from the previous step ([interface v1](../interface/v1/variables.md)). In the examples below, **`$input`** is used as a local shorthand for `$process_input['result']` (or `$process_input`) where the step receives a nested payload.
 
 ## Overview
 

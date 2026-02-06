@@ -435,18 +435,21 @@ The Event Broker notifies admins when an event type has no listeners. Review the
 
 ### 6. Design Idempotent Listeners
 
-Listeners may occasionally receive duplicate events. Design your listeners to handle the same event multiple times safely:
+Listeners may occasionally receive duplicate events. Design your listeners to handle the same event multiple times safely. Use `$tenantDb` (tenant-scoped) in listener steps:
 
 ```php
 // Check if already processed
-$existingResult = $db->query("SELECT * FROM processed_events WHERE event_id = ?", [$event['event_id']]);
-if ($existingResult) {
+$existing = $tenantDb->getOne("SELECT * FROM processed_events WHERE event_id = ?", [$event['event_id']]);
+if ($existing) {
     return ['success' => true, 'data' => ['already_processed' => true]];
 }
 
 // Process and mark as handled
 // ... processing logic ...
-$db->execute("INSERT INTO processed_events (event_id, processed_at) VALUES (?, NOW())", [$event['event_id']]);
+$tenantDb->insert('processed_events', [
+    'event_id' => $event['event_id'],
+    'processed_at' => date('Y-m-d H:i:s')
+]);
 ```
 
 ## Troubleshooting

@@ -247,10 +247,12 @@ return ['success' => true, 'data' => $processed_data];
 ```php
 <?php
 try {
-    $stmt = $db->prepare("INSERT INTO Customers (name, email, tenant_id) VALUES (?, ?, ?)");
-    $result = $stmt->execute([$process_input['name'], $process_input['email'], $tenant_id]);
+    $customer_id = $tenantDb->insert('Customers', [
+        'name' => $process_input['name'],
+        'email' => $process_input['email']
+    ]);
     
-    if (!$result) {
+    if (!$customer_id) {
         return [
             'success' => false,
             'error' => [
@@ -262,14 +264,13 @@ try {
         ];
     }
     
-    $customer_id = $db->lastInsertId();
     return [
         'success' => true,
         'data' => ['customer_id' => $customer_id],
         'message' => 'Customer created successfully'
     ];
     
-} catch (\PDOException $e) {
+} catch (Exception $e) {
     return [
         'success' => false,
         'error' => [
@@ -869,7 +870,7 @@ Files returned by `getFiles()` and `getFile()` have the following structure:
 3. **Execution Scoping**: Files are scoped to a specific execution ID, ensuring process isolation.
 4. **Path Validation**: The service validates all file paths to prevent directory traversal attacks.
 
-For more detailed file upload documentation, see [WebApp File Upload Guide](./WEBAPP_FILE_UPLOAD_GUIDE.md).
+For more detailed file upload documentation, see the WebApp File Upload Guide in the platform repository.
 
 ---
 
@@ -1077,9 +1078,8 @@ if (empty($process_input['email'])) {
     return ['success' => false, 'error' => ['code' => 'MISSING_EMAIL']];
 }
 
-// Step 2: Save to database
-$stmt = $db->prepare("INSERT INTO customers (email) VALUES (?)");
-$stmt->execute([$process_input['email']]);
+// Step 2: Save to database (use $tenantDb for tenant-scoped inserts)
+$tenantDb->insert('customers', ['email' => $process_input['email']]);
 
 // Step 3: Send notification
 $email->send($process_input['email'], 'Welcome!', 'Your account is created');

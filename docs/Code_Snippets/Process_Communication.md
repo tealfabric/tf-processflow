@@ -1,6 +1,6 @@
 # Process-to-Process Communication
 
-This guide covers calling other processes from within ProcessFlow code snippets.
+This guide covers calling other processes from within ProcessFlow code snippets. Step input from the previous step is always **`$process_input`** (see [interface v1](../interface/v1/variables.md)); examples may use local variables (e.g. `$payload`) for data being sent to another process.
 
 ## Overview
 
@@ -621,8 +621,9 @@ $log_message("[INFO] Process response received");
 
 ### 4. Pass Context Through Chain
 ```php
-// Include correlation ID for tracing
-$input['correlation_id'] = $process_input['correlation_id'] ?? uniqid();
+// Include correlation ID for tracing (payload is data sent to the other process)
+$payload = $process_input; // or build from $process_input
+$payload['correlation_id'] = $process_input['correlation_id'] ?? uniqid();
 ```
 
 ---

@@ -2,6 +2,8 @@
 
 This guide covers file operations within ProcessFlow code snippets using tenant-scoped file functions. **This document is the authoritative reference for tenant file operations in this repository.** The platform injects closure variables (e.g. `$file_get_contents`, `$file_put_contents`, `$mkdir`)—use the `$` prefix; native PHP names are not available in the snippet sandbox.
 
+**Error format:** The step contract ([interface v1](../interface/v1/error-format.md)) requires errors to be an object with `code` and `message` (and optional `details`). Examples below use this structure where shown; in any simplified `'error' => 'string'` usage, production code should use `'error' => ['code' => '...', 'message' => '...']` for consistency with the interface.
+
 ## Overview
 
 ProcessFlow provides tenant-scoped file operations through closure variables. These functions automatically handle path validation and ensure files are stored within the tenant's directory.
@@ -66,7 +68,11 @@ $content = $process_input['result']['content'] ?? '';
 $directory = $process_input['result']['directory'] ?? 'uploads';
 
 if (empty($filename) || $content === '') {
-    return ['success' => false, 'error' => 'Filename and content required'];
+    return [
+        'success' => false,
+        'error' => ['code' => 'VALIDATION_ERROR', 'message' => 'Filename and content required'],
+        'data' => null
+    ];
 }
 
 // Sanitize filename
@@ -87,7 +93,8 @@ try {
     if ($bytesWritten === false) {
         return [
             'success' => false,
-            'error' => 'Failed to write file'
+            'error' => ['code' => 'FILE_ERROR', 'message' => 'Failed to write file'],
+            'data' => null
         ];
     }
     
@@ -107,7 +114,8 @@ try {
     
     return [
         'success' => false,
-        'error' => 'File write error: ' . $e->getMessage()
+        'error' => ['code' => 'FILE_ERROR', 'message' => 'File write error', 'details' => $e->getMessage()],
+        'data' => null
     ];
 }
 ```

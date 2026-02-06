@@ -53,14 +53,16 @@ if (!filter_var($process_input['email'], FILTER_VALIDATE_EMAIL)) {
 return ['success' => true, 'data' => $process_input];
 ```
 
-### Database Insert
+### Database Insert (use $tenantDb in tenant steps)
 ```php
 <?php
 try {
-    $stmt = $db->prepare("INSERT INTO table (col1, col2, tenant_id) VALUES (?, ?, ?)");
-    $result = $stmt->execute([$process_input['val1'], $process_input['val2'], $tenant_id]);
+    $id = $tenantDb->insert('table', [
+        'col1' => $process_input['val1'],
+        'col2' => $process_input['val2']
+    ]);
     
-    if (!$result) {
+    if (!$id) {
         return [
             'success' => false,
             'error' => ['code' => 'DATABASE_ERROR', 'message' => 'Insert failed'],
@@ -68,13 +70,12 @@ try {
         ];
     }
     
-    $id = $db->lastInsertId();
     return [
         'success' => true,
         'data' => ['id' => $id],
         'message' => 'Record created'
     ];
-} catch (PDOException $e) {
+} catch (Exception $e) {
     return [
         'success' => false,
         'error' => ['code' => 'DATABASE_ERROR', 'message' => $e->getMessage()],
@@ -83,20 +84,21 @@ try {
 }
 ```
 
-### Database Select
+### Database Select (use $tenantDb in tenant steps)
 ```php
 <?php
 try {
-    $stmt = $db->prepare("SELECT * FROM table WHERE tenant_id = ? AND status = ?");
-    $stmt->execute([$tenant_id, $process_input['status']]);
-    $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $results = $tenantDb->query(
+        "SELECT * FROM table WHERE status = ?",
+        [$process_input['status']]
+    );
     
     return [
         'success' => true,
         'data' => ['records' => $results, 'count' => count($results)],
         'message' => 'Records retrieved'
     ];
-} catch (PDOException $e) {
+} catch (Exception $e) {
     return [
         'success' => false,
         'error' => ['code' => 'DATABASE_ERROR', 'message' => $e->getMessage()],
