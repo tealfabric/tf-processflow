@@ -8,6 +8,7 @@ This directory contains all documentation needed to author ProcessFlow code snip
 - **PROCESSFLOW_QUICK_REFERENCE.md** — Quick reference and common patterns.
 - **PROCESSFLOW_EVENT_HANDLING_GUIDE.md** — Event Broker pattern and event-driven process orchestration.
 - **WEBAPP_ASYNC_PROCESS_TRIGGER_GUIDE.md** — Async process trigger for WebApp/Webhook (stub process pattern).
+- **PROCESSFLOW_SANDBOX_AND_API_RESTRICTIONS.md** — Sandbox runtime restrictions, blocked APIs/patterns, allowed wrappers, and validation limits.
 - **Code_Snippets/** — Category-specific snippet examples (data validation, DB, connectors, notifications, etc.).
 - **interface/** — Versioned step contract (variables, return format, error format, services). See `interface/v1/` for current contract and `interface/CHANGELOG.md` for changes.
 

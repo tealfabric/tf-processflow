@@ -8,7 +8,7 @@ This repository contains all documentation, code samples, and examples needed to
 
 ## Structure
 
-- **`docs/`** — Snippet authoring guides, quick reference, event handling, WebApp/async trigger docs. Versioned interface contract under `docs/interface/v1/`.
+- **`docs/`** — Snippet authoring guides, quick reference, event handling, WebApp/async trigger docs, and sandbox/API restrictions (`docs/PROCESSFLOW_SANDBOX_AND_API_RESTRICTIONS.md`). Versioned interface contract under `docs/interface/v1/`.
 - **`spec/`** — Machine-readable step contract (e.g. JSON) per interface version.
 - **`examples/`** — Shared, non-tenant PHP snippets by category (notifications, integrations, webhooks, data-processing, llm, files).
 - **`reference/`** — Single prototype file and instructions for agents (Cursor, etc.), tied to an interface version.
