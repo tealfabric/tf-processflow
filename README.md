@@ -6,6 +6,22 @@ This repository contains all documentation, code samples, and examples needed to
 - **Licensing** can differ (e.g. proprietary or customer-specific for this repo)
 - **Versioning** of the snippet interface is managed here for non-breaking evolution
 
+## Repository role (master skeleton)
+
+This repository is the **master skeleton** for ProcessFlow snippet generation and structure.
+
+- Use this repo as a base/template to create your own tenant- or application-specific snippet repository.
+- Do **not** use this master `tf-processflow` repo to store end-user/customer-specific production code.
+- All end-user related changes must be maintained in a **separate repository** owned by that tenant/application.
+
+This approach keeps the skeleton clean and makes it safer to patch or upgrade from the master repository over time.
+
+## Recommended usage for tenants/apps
+
+1. Clone/fork this `tf-processflow` repository for your tenant or application.
+2. Keep your actual user content in the `tenants/` directory in your own repository.
+3. Keep master skeleton updates and end-user code separate, so future upgrades can be merged with lower risk.
+
 ## Structure
 
 - **`docs/`** — Snippet authoring guides, quick reference, event handling, WebApp/async trigger docs, and sandbox/API restrictions (`docs/PROCESSFLOW_SANDBOX_AND_API_RESTRICTIONS.md`). Versioned interface contract under `docs/interface/v1/`.

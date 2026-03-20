@@ -2,6 +2,14 @@
 
 This directory contains all documentation needed to author ProcessFlow code snippets. The **snippet runtime** (ProcessStepExecutor, CodeSandbox, etc.) lives in the core platform repository; only the authoring guides and the versioned **interface contract** are maintained here.
 
+## Master skeleton policy
+
+This `tf-processflow` repository is the **master skeleton** for ProcessFlow snippet structure and generation.
+
+- Do **not** store end-user/customer-specific production snippet code in this master repository.
+- For tenant/application implementations, clone or fork this repository and keep end-user changes in that separate repository.
+- Keep actual tenant content under `tenants/` in your tenant/app repository so master skeleton patches/upgrades can be applied later with lower risk.
+
 ## Contents
 
 - **PROCESSFLOW_CODE_SNIPPETS_GUIDE.md** — Full guide: structure, input/output, variables, error handling, examples, best practices.
