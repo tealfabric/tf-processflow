@@ -17,9 +17,10 @@
  */
 
  // Integration ID placeholder - to be filled during deployment
-$integrationId = '27f20b63-4b7b-4cd0-a669-b4eb9c6ab695';
-// Tealfabric IO Support project ID
-$projectId = 6;
+// The integration with Gitlab API connector or Generic RestAPI connector
+//$integrationId = '27f20b63-4b7b-4cd0-a669-b4eb9c6ab695';
+// Gitlab project ID to connect
+$projectId = 0;
 
 
 // Validate input

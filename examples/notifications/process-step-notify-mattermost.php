@@ -20,7 +20,7 @@
 
 
 // Integration ID placeholder - to be filled during deployment
-$integrationId = 'b9214c42-f57d-442d-908f-8d222a0b24eb';
+$integrationId = 'fill-the-id-here';
 
 // Validate input
 if (empty($process_input['analysis'])) {

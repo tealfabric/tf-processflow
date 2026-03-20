@@ -17,9 +17,9 @@
 
 
  // Integration ID placeholder - to be filled during deployment
-$integrationId = '27f20b63-4b7b-4cd0-a669-b4eb9c6ab695';
-// Tealfabric IO Support project ID
-$projectId = 6;
+// $integrationId = '27f20b63-4b7b-4cd0-a669-b4eb9c6ab695';
+// Gitlab project ID
+//$projectId = 0;
 
 // Validate input
 if (empty($process_input['issue_iid'])) {

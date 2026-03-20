@@ -16,7 +16,7 @@
  */
 
  // Integration ID placeholder - to be filled during deployment
-$integrationId = '9c2d8c1e-3af6-4cec-b30a-d0805b716ab2';
+$integrationId = 'fill-in-integration-id-here';
 
 // Get user_id from process_input or fallback to context variable
 $userId = $process_input['user_id'] ?? $user_id ?? '';
@@ -107,7 +107,7 @@ $emailBodyHtml .= "</p>";
 
 $emailBodyHtml .= "<p style='margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee; color: #7f8c8d; font-size: 0.9em;'>";
 $emailBodyHtml .= "Best regards,<br>";
-$emailBodyHtml .= "Tealfabric Support Team";
+$emailBodyHtml .= "Support Team";
 $emailBodyHtml .= "</p>";
 
 $emailBodyHtml .= "</div>";
@@ -125,10 +125,9 @@ if (!empty($issueIid) && !empty($issueUrl)) {
 
 $emailBodyText .= "We will get back to you as soon as possible. Our support team typically responds within 24 hours during business days.\n\n";
 $emailBodyText .= "Need Immediate Assistance?\n\n";
-$emailBodyText .= "You can also discuss your topic with our Support agent directly in Tealfabric IO:\n";
-$emailBodyText .= "https://tealfabric.io\n\n";
+$emailBodyText .= "You can also discuss your topic with our Support agent directly in X:\n";
 $emailBodyText .= "Best regards,\n";
-$emailBodyText .= "Tealfabric Support Team";
+$emailBodyText .= "Support Team";
 
 
 // Send email using SMTP Email connector
