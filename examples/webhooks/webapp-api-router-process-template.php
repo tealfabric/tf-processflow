@@ -149,6 +149,30 @@ $httpCode = $apiResponse['status_code'] ?? 200;
 $responseBody = $apiResponse['body'] ?? ($apiResponse['raw_response'] ?? '');
 $responseHeaders = $apiResponse['headers'] ?? [];
 
+// Option C (token-to-cookie at webapp boundary):
+// If downstream API returns token fields in JSON response body, expose them
+// as output variables so the outer webapp endpoint can issue Set-Cookie.
+$authPayload = [];
+$decodedBody = json_decode((string)$responseBody, true);
+if (json_last_error() === JSON_ERROR_NONE && is_array($decodedBody)) {
+    foreach ([
+        'session_token',
+        'token',
+        'access_token',
+        'expires_at',
+        'cookie_name',
+        'cookie_path',
+        'cookie_domain',
+        'cookie_secure',
+        'cookie_httponly',
+        'cookie_samesite'
+    ] as $field) {
+        if (array_key_exists($field, $decodedBody)) {
+            $authPayload[$field] = $decodedBody[$field];
+        }
+    }
+}
+
 // Normalize response headers to array format
 if (is_string($responseHeaders)) {
     // Parse header string if needed
@@ -167,5 +191,8 @@ return [
     'success' => true,
     'http_code' => $httpCode,
     'headers' => $responseHeaders,
-    'body' => $responseBody
+    'body' => $responseBody,
+    // Optional auth token fields for token-to-cookie rewriting
+    // by the webapp response boundary.
+    'data' => $authPayload
 ];
