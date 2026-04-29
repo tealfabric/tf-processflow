@@ -44,10 +44,9 @@ The current step contract version is in **`INTERFACE_VERSION`** (e.g. `1.0.0`). 
 
 Snippet **content** lives in this repo; the **runtime** (ProcessStepExecutor, CodeSandbox, etc.) lives in the core platform repo. The platform can consume this repo by:
 
-- **Deploy-time copy:** Copy `tenants/<tenant>/snippets/` and optionally `examples/` into a path the platform reads.
-- **Git submodule/subtree:** Include this repo in the platform repo and read snippet files from the tree at deploy or runtime.
-
-See the plan in the platform repo (`docs/PLANS/Backlog/PROCESS_FLOW_SNIPPETS_REPOSITORY_SPLIT_PLAN.md`) for full migration and integration options.
+- **Manual deployment: ** Copy `tenants/<tenant>/snippets/` file content into the process it beongs to in the platform UI (tenant-admin level user account needed).
+- **Git CI/CD deployment: ** Include a deployment script in the case of successful tests to push updated code snippets to the process through API (API key needed).
+- **MCP Server: ** Ask your code generating Agent to push the code snippets to the processes through the Tealfabric MCP server. Cursor, Claude Code, and Lovable supported (API key needed).
 
 ## License
 
